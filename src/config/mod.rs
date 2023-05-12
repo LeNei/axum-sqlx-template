@@ -7,10 +7,13 @@ use app::ApplicationSettings;
 use database::DatabaseSettings;
 use serde::Deserialize;
 
+use self::jwks::JwksSettings;
+
 #[derive(Deserialize, Clone)]
 pub struct Settings {
     pub database: DatabaseSettings,
     pub application: ApplicationSettings,
+    pub jwks: JwksSettings,
 }
 
 pub fn get_configuration() -> Result<Settings, config::ConfigError> {

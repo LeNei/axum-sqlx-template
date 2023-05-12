@@ -8,8 +8,7 @@ use std::net::TcpListener;
 pub async fn build(settings: Settings) -> anyhow::Result<()> {
     let api_context = ApiContext {
         db: settings.database.get_connection_pool(),
-        jwks: Jwks::from_authority("http://localhost:8088/realms/test", "account".to_string())
-            .await?,
+        jwks: Jwks::from_authority(&settings.jwks.url, settings.jwks.authority).await?,
     };
     let api_router = build_routes(api_context);
     let address = format!(

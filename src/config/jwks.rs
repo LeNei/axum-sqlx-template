@@ -5,6 +5,7 @@ use jsonwebtoken::{
     DecodingKey, TokenData, Validation,
 };
 use serde::de::DeserializeOwned;
+use serde::Deserialize;
 use std::collections::HashMap;
 use thiserror::Error;
 use tracing::{debug, info};
@@ -69,8 +70,12 @@ impl Jwks {
                         },
                     );
                 }
-                _ => {
-                    info!(%kid,  "Ignoring unsupported key.")
+                other => {
+                    return Err(JwkError::UnexpectedAlgorithm {
+                        key_id: kid,
+                        algorithm: other.to_owned(),
+                    }
+                    .into())
                 }
             }
         }
@@ -155,4 +160,10 @@ pub(crate) enum JwkError {
         algorithm: AlgorithmParameters,
         key_id: String,
     },
+}
+
+#[derive(Deserialize, Clone)]
+pub struct JwksSettings {
+    pub url: String,
+    pub authority: String,
 }
