@@ -1,5 +1,6 @@
 pub mod app;
 pub mod database;
+pub mod jwks;
 pub mod logging;
 
 use app::ApplicationSettings;
