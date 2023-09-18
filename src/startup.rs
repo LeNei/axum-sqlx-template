@@ -19,6 +19,7 @@ pub async fn build(settings: Settings) -> anyhow::Result<()> {
 
     run(api_router, listener).await
 }
+
 async fn run(router: Router, listener: TcpListener) -> anyhow::Result<()> {
     axum::Server::from_tcp(listener)?
         .serve(router.into_make_service())
