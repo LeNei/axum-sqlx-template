@@ -22,7 +22,7 @@ pub fn build_routes(api_context: ApiContext) -> Router {
         // allow requests from any origin
         .allow_origin(Any);
     Router::new()
-        .route("/ping", get(ping))
+        .route("/", get(ping))
         .layer(TraceLayer::new_for_http())
         .layer(cors)
         .with_state(api_context)

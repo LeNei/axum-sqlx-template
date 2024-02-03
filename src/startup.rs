@@ -2,7 +2,7 @@ use crate::config::Settings;
 use crate::routes::{build_routes, ApiContext};
 use anyhow::Context;
 use axum::Router;
-use std::net::TcpListener;
+use tokio::net::TcpListener;
 
 pub async fn build(settings: Settings) -> anyhow::Result<()> {
     let api_context = ApiContext {
@@ -13,13 +13,13 @@ pub async fn build(settings: Settings) -> anyhow::Result<()> {
         "{}:{}",
         settings.application.host, settings.application.port
     );
-    let listener = TcpListener::bind(address).context("Failed to bind to port")?;
+    let listener = TcpListener::bind(address).await.context("Failed to bind to port")?;
 
     run(api_router, listener).await
 }
+
 async fn run(router: Router, listener: TcpListener) -> anyhow::Result<()> {
-    axum::Server::from_tcp(listener)?
-        .serve(router.into_make_service())
+    axum::serve(listener, router)
         .await
         .context("Failed to start server")
 }
