@@ -18,7 +18,8 @@ pub async fn build(settings: Settings) -> anyhow::Result<()> {
     tracing::info!("Creating router...");
     let mut router = Router::new()
         .merge(page_routes(api_context.clone()))
-        .nest("/api", api_routes(api_context))
+        .nest("/api", api_routes())
+        .with_state(api_context)
         .layer(TraceLayer::new_for_http());
 
     if !settings.is_dev {
