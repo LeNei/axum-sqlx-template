@@ -1,6 +1,5 @@
-use axum::{routing::get, Router};
-use http::Method;
-use hyper::StatusCode;
+use axum::{Router, routing::get};
+use http::{Method, StatusCode};
 use sqlx::PgPool;
 use tower_http::cors::{Any, CorsLayer};
 use tower_http::trace::TraceLayer;
