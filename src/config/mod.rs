@@ -1,15 +1,20 @@
 pub mod app;
 pub mod database;
+pub mod inertia;
 pub mod logging;
 
 use app::ApplicationSettings;
+use axum::extract::FromRef;
+use axum_inertia::InertiaConfig;
 use database::DatabaseSettings;
 use serde::Deserialize;
+use sqlx::PgPool;
 
 #[derive(Deserialize, Clone)]
 pub struct Settings {
     pub database: DatabaseSettings,
     pub application: ApplicationSettings,
+    pub is_dev: bool,
 }
 
 pub fn get_configuration() -> Result<Settings, config::ConfigError> {
@@ -72,5 +77,17 @@ impl TryFrom<String> for Environment {
                 other
             )),
         }
+    }
+}
+
+#[derive(Clone)]
+pub struct ApiContext {
+    pub db: PgPool,
+    pub inertia: InertiaConfig,
+}
+
+impl FromRef<ApiContext> for InertiaConfig {
+    fn from_ref(app_state: &ApiContext) -> InertiaConfig {
+        app_state.inertia.clone()
     }
 }
